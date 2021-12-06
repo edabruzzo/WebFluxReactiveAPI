@@ -2,7 +2,7 @@ package br.com.abruzzo.WebFluxReactiveAPI.config;
 
 public enum ParametrosConfig {
 
-    ENDPOINT_BASE("http://localhost:8080"),
+    ENDPOINT_BASE("https://localhost:8080"),
     HEROES_ENDPOINT("/heroes"),
     ENDPOINT_DYNAMO("http://localhost:8000"),
     REGION_DYNAMO("us-east-1"),

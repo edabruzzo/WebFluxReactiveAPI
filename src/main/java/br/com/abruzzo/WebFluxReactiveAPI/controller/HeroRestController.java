@@ -29,18 +29,18 @@ public class HeroRestController {
         logger.info("Chegou GET request no Endpoint {}/{}/{}", ParametrosConfig.ENDPOINT_BASE.getValue()
                                                          , ParametrosConfig.HEROES_ENDPOINT.getValue()
                                                          ,id);
-        return heroService.findById(id).map((item)->new ResponseEntity<>(item, HttpStatus.OK))
+        return heroService.findById(id).map(item->new ResponseEntity<>(item, HttpStatus.OK))
                 .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping(value = "/heroes", produces=MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
     public Flux<Hero> getAllHeroes(){
         logger.info("Chegou GET request no Endpoint {}/{}", ParametrosConfig.ENDPOINT_BASE.getValue()
                                                       , ParametrosConfig.HEROES_ENDPOINT.getValue());
         return heroService.findAll();
     }
 
-    @PostMapping(value="/heroes",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
     public Mono<Hero> createHero(@RequestBody Hero hero){
         logger.info("POST request received on endpoint: {}", ParametrosConfig.ENDPOINT_BASE.getValue());
         Mono<Hero> heroSaved = null;
@@ -55,7 +55,7 @@ public class HeroRestController {
     }
 
 
-    @DeleteMapping(value="/heroes"+"{id}")
+    @DeleteMapping(value="id")
     @ResponseStatus(code=HttpStatus.CONTINUE)
     public Mono<HttpStatus> delete(@PathVariable String id){
         logger.info("DELETE request received on endpoint: {}", ParametrosConfig.ENDPOINT_BASE.getValue());
