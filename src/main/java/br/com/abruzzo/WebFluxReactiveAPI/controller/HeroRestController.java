@@ -59,25 +59,33 @@ public class HeroRestController {
 
 
     @PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE,
-                                produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Mono<ResponseEntity<Hero>> replaceHero(@RequestBody Hero newHero, @PathVariable String id) {
-        newHero.setId(id);
-        heroService.findById(id).map(hero -> {
-            logger.info("Hero is being update");
-            logger.info(hero.toString());
-            hero.setUniverse(newHero.getUniverse());
-            hero.setName(newHero.getName());
-            hero.setCountFilms(newHero.getCountFilms());
-            return new ResponseEntity<>(heroService.save(hero),HttpStatus.CREATED);
-        });
-
-        logger.info("Hero with id {} was update", id);
-
-        return heroService.findById(id).map(item->new ResponseEntity<>(item, HttpStatus.OK))
-                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public Mono<ResponseEntity<Hero>> updateHero(@PathVariable String id,
+                                                    @RequestBody Hero heroUpdated) {
+        heroUpdated.setId(id);
+        Mono<ResponseEntity<Hero>> resposta = Mono.just(ResponseEntity.notFound().build());
+        try {
+            resposta = heroService.findById(id)
+                    .flatMap(oldHero -> {
+                        oldHero.setId(heroUpdated.getId());
+                        oldHero.setUniverse(heroUpdated.getUniverse());
+                        oldHero.setName(heroUpdated.getName());
+                        oldHero.setCountFilms(heroUpdated.getCountFilms());
+                        return heroService.save(oldHero);
+                    }).map(hero -> ResponseEntity.ok(hero))
+                    .defaultIfEmpty(ResponseEntity.notFound().build());
+        }catch(Exception erro){
+                logger.debug(erro.getLocalizedMessage());
+        }
+        return resposta;
 
     }
+
+
+
+
+
 
     @DeleteMapping(value="{id}")
     @ResponseStatus(code=HttpStatus.OK)

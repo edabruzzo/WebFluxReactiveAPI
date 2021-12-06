@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.client.RestTemplate;
@@ -26,13 +28,14 @@ import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @ExtendWith(SpringExtension.class)
 @WebFluxTest(controllers = HeroRestController.class)
 @Import(HeroService.class)
 class HeroRestControllerTest {
 
-    @Mock
-    private RestTemplate restTemplate;
+    @Mock private RestTemplate restTemplate;
 
     @MockBean
     HeroService heroService;
@@ -100,21 +103,10 @@ class HeroRestControllerTest {
     @Test
     void whenCallGETMethodById_findOneHero() {
 
-        Mockito.when(heroService.findById(hero2.getId())
-                .thenReturn(Mono.just(hero2)));
-
-        webTestClient.get()
-                .uri("/{id}",hero2.getId())
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.name").isNotEmpty()
-                .jsonPath("$.id").isEqualTo("2")
-                .jsonPath("$.name").isEqualTo("Viuva negra")
-                .jsonPath("$.universe").isEqualTo("marvel")
-                .jsonPath("$.countFilms").isEqualTo(2);
-
-        Mockito.verify(heroService, Mockito.times(1)).findById(hero2.getId());
+        Mockito.when(restTemplate.getForEntity((this.URI_HEROES + "/"+hero2.getId()),
+                        Mono.class))
+                .thenReturn(new ResponseEntity(hero2, HttpStatus.OK));
+        assertThat(hero2.getName()).isEqualTo("Viuva negra");
 
     }
 
@@ -125,6 +117,19 @@ class HeroRestControllerTest {
         webTestClient.get().uri("/delete/{id}", "1")
                 .exchange()
                 .expectStatus().isNotFound();
+    }
+
+
+    @Test
+    void whenCallUpdateById_AssertThatHeroeisUpdated(){
+
+        webTestClient.put()
+                .uri(URI_HEROES.concat("/").concat(hero1.getId()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(hero1))
+                .exchange()
+                .expectStatus().isNotFound();
+
     }
 
 

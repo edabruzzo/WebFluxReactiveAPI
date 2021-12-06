@@ -13,6 +13,43 @@
   * Reactor
 
 
+### API Documentation
+
+#### HEROES REACTIVE WEBFLUX API
+##### Reactive API using WebFlux, DynamoDB, AWS CLI, REACTOR, Spring Framework
+
+#### GET -> Get Hero By ID
+    curl --location --request GET 'localhost:8080/heroes/4'
+
+#### POST -> Create new HERO on DynamoDB
+    curl --location --request POST 'localhost:8080/heroes/' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+    "id":"2",
+    "name":"Genoveva",
+    "universe":"Encantado",
+    "countFilmes":10
+    }'
+
+#### GET ALL Heroes
+    curl --location --request GET 'localhost:8080/heroes'
+
+#### DELETE RESOURCE BY ID
+    curl --location --request DELETE 'localhost:8080/heroes/2'
+
+#### PUT  -> UPDATE HERO BY ID
+    curl --location --request PUT 'localhost:8080/heroes/4' \   
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+    "id": "4",
+    "name":"Amélia",
+    "universe":"All",
+    "countFilms":4  
+    }'
+
+
+
+
 ### Reading - Reactive Manifesto
 + https://www.reactivemanifesto.org/
 
@@ -99,3 +136,4 @@
     #### Testing Webflux Reactive Applications
 + https://stackoverflow.com/questions/60611730/properly-ways-to-testing-webflux-rest-api
 + https://howtodoinjava.com/spring-webflux/webfluxtest-with-webtestclient/
+
