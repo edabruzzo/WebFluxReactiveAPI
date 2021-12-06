@@ -8,13 +8,14 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class HeroService {
+public class HeroService implements IHeroService {
 
     @Autowired
     private HeroesRepository heroesRepository;
-    public Flux<Hero> findAll() {return Flux.fromIterable(heroesRepository.findAll());}
-    public Mono<Hero> findById(String id) {return Mono.justOrEmpty(heroesRepository.findById(id));}
-    public Mono<Hero> save(Hero hero) {return Mono.justOrEmpty(heroesRepository.save(hero));}
-    public void deleteById(String id) {heroesRepository.deleteById(id);}
+
+    @Override public Flux<Hero> findAll() {return Flux.fromIterable(heroesRepository.findAll());}
+    @Override public Mono<Hero> findById(String id) {return Mono.justOrEmpty(heroesRepository.findById(id));}
+    @Override public Mono<Hero> save(Hero hero) {return Mono.justOrEmpty(heroesRepository.save(hero));}
+    @Override public void deleteById(String id) {heroesRepository.deleteById(id);}
 
 }

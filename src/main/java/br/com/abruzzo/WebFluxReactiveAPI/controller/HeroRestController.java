@@ -26,11 +26,13 @@ public class HeroRestController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Mono<Hero> getHeroById(@PathVariable String id) {
+    public ResponseEntity<Mono<Hero>> getHeroById(@PathVariable String id) {
         logger.info("Chegou GET request no Endpoint {}/{}/{}", ParametrosConfig.ENDPOINT_BASE.getValue()
                                                          , ParametrosConfig.HEROES_ENDPOINT.getValue()
                                                          ,id);
-        return heroService.findById(id);
+        Mono<Hero> hero = heroService.findById(id);
+        HttpStatus status = (hero != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+        return new ResponseEntity<>(hero,status);
     }
 
     @GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
@@ -78,20 +80,15 @@ public class HeroRestController {
     }
 
     @DeleteMapping(value="{id}")
-    @ResponseStatus(code=HttpStatus.CONTINUE)
-    public Mono<HttpStatus> delete(@PathVariable String id){
+    @ResponseStatus(code=HttpStatus.OK)
+    public void delete(@PathVariable String id){
         logger.info("DELETE request received on endpoint: {}", ParametrosConfig.ENDPOINT_BASE.getValue());
-
         try{
             heroService.deleteById(id);
             logger.info("Hero with id {} was deleted", id);
         }catch (Exception erro){
             logger.debug(erro.getLocalizedMessage());
-            return Mono.just(HttpStatus.NOT_FOUND);
         }
-
-        return Mono.just(HttpStatus.OK);
-
     }
 
 
