@@ -24,13 +24,13 @@ public class HeroRestController {
     @Autowired
     private HeroService heroService;
 
-    @GetMapping("/{id}")
-    public Mono<ResponseEntity<Hero>> getHeroById(@PathVariable String id) {
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<Hero> getHeroById(@PathVariable String id) {
         logger.info("Chegou GET request no Endpoint {}/{}/{}", ParametrosConfig.ENDPOINT_BASE.getValue()
                                                          , ParametrosConfig.HEROES_ENDPOINT.getValue()
                                                          ,id);
-        return heroService.findById(id).map(item->new ResponseEntity<>(item, HttpStatus.OK))
-                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return heroService.findById(id);
     }
 
     @GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
@@ -40,7 +40,8 @@ public class HeroRestController {
         return heroService.findAll();
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
     public Mono<Hero> createHero(@RequestBody Hero hero){
         logger.info("POST request received on endpoint: {}", ParametrosConfig.ENDPOINT_BASE.getValue());
         Mono<Hero> heroSaved = null;
@@ -55,6 +56,27 @@ public class HeroRestController {
     }
 
 
+    @PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE,
+                                produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<ResponseEntity<Hero>> replaceHero(@RequestBody Hero newHero, @PathVariable String id) {
+        newHero.setId(id);
+        heroService.findById(id).map(hero -> {
+            logger.info("Hero is being update");
+            logger.info(hero.toString());
+            hero.setUniverse(newHero.getUniverse());
+            hero.setName(newHero.getName());
+            hero.setCountFilms(newHero.getCountFilms());
+            return new ResponseEntity<>(heroService.save(hero),HttpStatus.CREATED);
+        });
+
+        logger.info("Hero with id {} was update", id);
+
+        return heroService.findById(id).map(item->new ResponseEntity<>(item, HttpStatus.OK))
+                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+    }
+
     @DeleteMapping(value="{id}")
     @ResponseStatus(code=HttpStatus.CONTINUE)
     public Mono<HttpStatus> delete(@PathVariable String id){
@@ -68,7 +90,7 @@ public class HeroRestController {
             return Mono.just(HttpStatus.NOT_FOUND);
         }
 
-        return Mono.just(HttpStatus.CONTINUE);
+        return Mono.just(HttpStatus.OK);
 
     }
 
