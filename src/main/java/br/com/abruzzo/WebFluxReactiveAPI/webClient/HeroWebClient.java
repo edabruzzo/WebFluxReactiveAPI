@@ -15,6 +15,10 @@ public class HeroWebClient {
     WebClient webClient = WebClient.create(ENDPOINT_BASE.getValue());
     private static final Logger logger = LoggerFactory.getLogger(HeroWebClient.class);
 
+    private HeroWebClient() {
+        // Code smell -> java:S1118 -> Utility classes should not have public constructors
+    }
+
     public static void main(String[] args){
         HeroWebClient heroWebClient = new HeroWebClient();
         heroWebClient.consume();
