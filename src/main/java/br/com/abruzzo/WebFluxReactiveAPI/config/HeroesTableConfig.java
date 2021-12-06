@@ -17,10 +17,19 @@ import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
 
 public class HeroesTableConfig {
 
-    public static void main(String[] args) throws Exception {
+    public static void criaSchemaTabelas() throws Exception {
 
         DynamoDB dynamoDB = ConnectionFactory.obterDynamoDB();
         String tableName = ParametrosConfig.TABLENAME.getValue();
+
+        try{
+            Table table = dynamoDB.getTable(tableName);
+            table.delete();
+            System.out.println("Tabela deletada");
+        }catch(Exception exception){
+            System.out.println(exception.getLocalizedMessage());
+        }
+
 
         try {
             System.out.println("Creating table..."+tableName);

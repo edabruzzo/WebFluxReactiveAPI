@@ -3,17 +3,17 @@ package br.com.abruzzo.WebFluxReactiveAPI.controller;
 
 import br.com.abruzzo.WebFluxReactiveAPI.config.ParametrosConfig;
 import br.com.abruzzo.WebFluxReactiveAPI.model.Hero;
+import br.com.abruzzo.WebFluxReactiveAPI.repositories.HeroesRepository;
 import br.com.abruzzo.WebFluxReactiveAPI.service.HeroService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -100,8 +100,7 @@ class HeroRestControllerTest {
     @Test
     void whenCallGETMethodById_findOneHero() {
 
-        Mockito
-                .when(heroService.findById(hero2.getId())
+        Mockito.when(heroService.findById(hero2.getId())
                 .thenReturn(Mono.just(hero2)));
 
         webTestClient.get()
