@@ -15,6 +15,10 @@
 
 ### API Documentation
 
+https://app.swaggerhub.com/apis-docs/edabruzzo/default-title/0.1
+
+![img.png](img.png)
+
 #### HEROES REACTIVE WEBFLUX API
 ##### Reactive API using WebFlux, DynamoDB, AWS CLI, REACTOR, Spring Framework
 

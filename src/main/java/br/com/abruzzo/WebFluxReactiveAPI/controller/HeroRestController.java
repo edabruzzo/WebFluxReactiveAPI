@@ -83,10 +83,6 @@ public class HeroRestController {
     }
 
 
-
-
-
-
     @DeleteMapping(value="{id}")
     @ResponseStatus(code=HttpStatus.OK)
     public void delete(@PathVariable String id){
