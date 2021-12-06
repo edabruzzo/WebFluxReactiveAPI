@@ -15,8 +15,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/heroes")
 @Slf4j
+@RequestMapping("/heroes")
 public class HeroRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(HeroRestController.class);
@@ -40,7 +40,7 @@ public class HeroRestController {
         return heroService.findAll();
     }
 
-    @PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public Mono<Hero> createHero(@RequestBody Hero hero){
         logger.info("POST request received on endpoint: {}", ParametrosConfig.ENDPOINT_BASE.getValue());
         Mono<Hero> heroSaved = null;
@@ -55,7 +55,7 @@ public class HeroRestController {
     }
 
 
-    @DeleteMapping(value="id")
+    @DeleteMapping(value="{id}")
     @ResponseStatus(code=HttpStatus.CONTINUE)
     public Mono<HttpStatus> delete(@PathVariable String id){
         logger.info("DELETE request received on endpoint: {}", ParametrosConfig.ENDPOINT_BASE.getValue());
@@ -71,9 +71,6 @@ public class HeroRestController {
         return Mono.just(HttpStatus.CONTINUE);
 
     }
-
-
-
 
 
 }
