@@ -1,6 +1,5 @@
 package br.com.abruzzo.WebFluxReactiveAPI.webClient;
 
-import br.com.abruzzo.WebFluxReactiveAPI.controller.HeroRestController;
 import br.com.abruzzo.WebFluxReactiveAPI.model.Hero;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,18 +7,23 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static br.com.abruzzo.WebFluxReactiveAPI.config.Endpoints.ENDPOINT_BASE;
-import static br.com.abruzzo.WebFluxReactiveAPI.config.Endpoints.HEROES_ENDPOINT;
+import static br.com.abruzzo.WebFluxReactiveAPI.config.ParametrosConfig.ENDPOINT_BASE;
+import static br.com.abruzzo.WebFluxReactiveAPI.config.ParametrosConfig.HEROES_ENDPOINT;
 
 public class HeroWebClient {
 
-    WebClient webClient = WebClient.create(ENDPOINT_BASE.getEndpoint());
+    WebClient webClient = WebClient.create(ENDPOINT_BASE.getValue());
     private static final Logger logger = LoggerFactory.getLogger(HeroWebClient.class);
+
+    public static void main(String[] args){
+        HeroWebClient heroWebClient = new HeroWebClient();
+        heroWebClient.consume();
+    }
 
     public void consume() {
 
         Mono<Hero> heroMono = webClient.get()
-                .uri(HEROES_ENDPOINT.getEndpoint()+"/{id}", "1")
+                .uri(HEROES_ENDPOINT.getValue()+"/{id}", "1")
                 .retrieve()
                 .bodyToMono(Hero.class);
 
@@ -29,7 +33,7 @@ public class HeroWebClient {
 
 
         Flux<Hero> heroFlux = webClient.get()
-                .uri(HEROES_ENDPOINT.getEndpoint())
+                .uri(HEROES_ENDPOINT.getValue())
                 .retrieve()
                 .bodyToFlux(Hero.class);
 
